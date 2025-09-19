@@ -6,6 +6,7 @@ Testa todos os endpoints da API REST
 Para executar:
 pip install requests
 python test_api.py
+fiz isso pq é mais facil de rodar e ver o resultado
 """
 
 import requests
