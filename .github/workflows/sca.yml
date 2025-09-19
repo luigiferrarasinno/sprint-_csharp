@@ -1,0 +1,47 @@
+name: SCA - Dependência C#
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  actions: read
+  contents: read
+  security-events: write
+
+jobs:
+  snyk-scan:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout do código
+        uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@55ec9447dda3d1cf6bd587150f3262f30ee10815
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Instalar Snyk e snyk-to-sarif
+        run: npm install -g snyk snyk-to-sarif
+
+      - name: Autenticar Snyk
+        run: snyk auth ${{ secrets.SNYK_TOKEN }}
+
+      - name: Executar SCA Snyk Test
+        run: |
+            snyk test --all-projects --json > snyk-report.json
+            snyk-to-sarif -i snyk-report.json -o snyk-report.sarif
+            
+      - name: Upload do relatório
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: snyk-report
+          path: snyk-report.json
+
+      - name: Upload SARIF report
+        uses: github/codeql-action/upload-sarif@528ca598d956c91826bd742262cdfc5d02b77710
+        with:
+            sarif_file: snyk-report.sarif
+            token: ${{ secrets.GITHUB_TOKEN }}
