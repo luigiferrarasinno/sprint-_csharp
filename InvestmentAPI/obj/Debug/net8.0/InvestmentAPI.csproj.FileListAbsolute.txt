@@ -1,0 +1,8 @@
+C:\Users\Davi\Documents\FIAP\sprint-_csharp\InvestmentAPI\obj\Debug\net8.0\InvestmentAPI.csproj.AssemblyReference.cache
+C:\Users\Davi\Documents\FIAP\sprint-_csharp\InvestmentAPI\obj\Debug\net8.0\rpswa.dswa.cache.json
+C:\Users\Davi\Documents\FIAP\sprint-_csharp\InvestmentAPI\obj\Debug\net8.0\InvestmentAPI.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Davi\Documents\FIAP\sprint-_csharp\InvestmentAPI\obj\Debug\net8.0\InvestmentAPI.AssemblyInfoInputs.cache
+C:\Users\Davi\Documents\FIAP\sprint-_csharp\InvestmentAPI\obj\Debug\net8.0\InvestmentAPI.AssemblyInfo.cs
+C:\Users\Davi\Documents\FIAP\sprint-_csharp\InvestmentAPI\obj\Debug\net8.0\InvestmentAPI.csproj.CoreCompileInputs.cache
+C:\Users\Davi\Documents\FIAP\sprint-_csharp\InvestmentAPI\obj\Debug\net8.0\InvestmentAPI.MvcApplicationPartsAssemblyInfo.cache
+C:\Users\Davi\Documents\FIAP\sprint-_csharp\InvestmentAPI\obj\Debug\net8.0\InvestmentAPI.sourcelink.json

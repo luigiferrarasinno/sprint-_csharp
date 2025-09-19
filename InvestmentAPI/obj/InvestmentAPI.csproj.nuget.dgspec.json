@@ -1,30 +1,30 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\ginno\\OneDrive\\facul\\aaa c#\\InvestmentAPI\\InvestmentAPI.csproj": {}
+    "C:\\Users\\Davi\\Documents\\FIAP\\sprint-_csharp\\InvestmentAPI\\InvestmentAPI.csproj": {}
   },
   "projects": {
-    "C:\\Users\\ginno\\OneDrive\\facul\\aaa c#\\InvestmentAPI\\InvestmentAPI.csproj": {
+    "C:\\Users\\Davi\\Documents\\FIAP\\sprint-_csharp\\InvestmentAPI\\InvestmentAPI.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\ginno\\OneDrive\\facul\\aaa c#\\InvestmentAPI\\InvestmentAPI.csproj",
+        "projectUniqueName": "C:\\Users\\Davi\\Documents\\FIAP\\sprint-_csharp\\InvestmentAPI\\InvestmentAPI.csproj",
         "projectName": "InvestmentAPI",
-        "projectPath": "C:\\Users\\ginno\\OneDrive\\facul\\aaa c#\\InvestmentAPI\\InvestmentAPI.csproj",
-        "packagesPath": "C:\\Users\\ginno\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\ginno\\OneDrive\\facul\\aaa c#\\InvestmentAPI\\obj\\",
+        "projectPath": "C:\\Users\\Davi\\Documents\\FIAP\\sprint-_csharp\\InvestmentAPI\\InvestmentAPI.csproj",
+        "packagesPath": "C:\\Users\\Davi\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Davi\\Documents\\FIAP\\sprint-_csharp\\InvestmentAPI\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\ginno\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "C:\\Users\\Davi\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
-          "net9.0"
+          "net8.0"
         ],
         "sources": {
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
-          "net9.0": {
-            "targetAlias": "net9.0",
+          "net8.0": {
+            "targetAlias": "net8.0",
             "projectReferences": {}
           }
         },
@@ -41,26 +41,30 @@
         "SdkAnalysisLevel": "9.0.300"
       },
       "frameworks": {
-        "net9.0": {
-          "targetAlias": "net9.0",
+        "net8.0": {
+          "targetAlias": "net8.0",
           "dependencies": {
-            "Microsoft.AspNetCore.OpenApi": {
+            "Microsoft.EntityFrameworkCore": {
               "target": "Package",
-              "version": "[9.0.5, )"
+              "version": "[8.0.11, )"
             },
-            "Microsoft.EntityFrameworkCore.InMemory": {
+            "Microsoft.EntityFrameworkCore.SqlServer": {
               "target": "Package",
-              "version": "[9.0.9, )"
+              "version": "[8.0.11, )"
             },
             "Microsoft.EntityFrameworkCore.Tools": {
               "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
               "suppressParent": "All",
               "target": "Package",
-              "version": "[9.0.9, )"
+              "version": "[8.0.11, )"
             },
-            "Swashbuckle.AspNetCore": {
+            "Newtonsoft.Json": {
               "target": "Package",
-              "version": "[9.0.4, )"
+              "version": "[13.0.4, )"
+            },
+            "Oracle.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "[8.23.90, )"
             }
           },
           "imports": [
@@ -74,6 +78,24 @@
           ],
           "assetTargetFallback": true,
           "warn": true,
+          "downloadDependencies": [
+            {
+              "name": "Microsoft.AspNetCore.App.Ref",
+              "version": "[8.0.19, 8.0.19]"
+            },
+            {
+              "name": "Microsoft.NETCore.App.Host.win-x64",
+              "version": "[8.0.19, 8.0.19]"
+            },
+            {
+              "name": "Microsoft.NETCore.App.Ref",
+              "version": "[8.0.19, 8.0.19]"
+            },
+            {
+              "name": "Microsoft.WindowsDesktop.App.Ref",
+              "version": "[8.0.19, 8.0.19]"
+            }
+          ],
           "frameworkReferences": {
             "Microsoft.AspNetCore.App": {
               "privateAssets": "none"
@@ -82,7 +104,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.300/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.304/PortableRuntimeIdentifierGraph.json"
         }
       }
     }
