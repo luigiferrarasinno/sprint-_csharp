@@ -43,6 +43,13 @@ namespace InvestmentAPI.Repositories
 
         public async Task<User> AddAsync(User user)
         {
+            // Gerar ID manualmente - buscar o próximo ID disponível
+            var lastId = await _context.Users
+                .OrderByDescending(u => u.Id)
+                .Select(u => u.Id)
+                .FirstOrDefaultAsync();
+            
+            user.Id = lastId + 1;
             user.CreatedAt = DateTime.UtcNow;
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
@@ -69,7 +76,8 @@ namespace InvestmentAPI.Repositories
 
         public async Task<bool> ExistsAsync(int id)
         {
-            return await _context.Users.AnyAsync(u => u.Id == id);
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == id);
+            return user != null;
         }
 
         public async Task<bool> EmailExistsAsync(string email, int? excludeUserId = null)
@@ -79,7 +87,8 @@ namespace InvestmentAPI.Repositories
             if (excludeUserId.HasValue)
                 query = query.Where(u => u.Id != excludeUserId.Value);
                 
-            return await query.AnyAsync();
+            var user = await query.FirstOrDefaultAsync();
+            return user != null;
         }
     }
 }

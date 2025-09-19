@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "AhcEkxivfFQ=",
+  "dgSpecHash": "wxCc+30yfkc=",
   "success": true,
   "projectFilePath": "C:\\Users\\ginno\\OneDrive\\facul\\aaa c#\\InvestmentAPI\\InvestmentAPI.csproj",
   "expectedPackageFiles": [
@@ -19,7 +19,6 @@
     "C:\\Users\\ginno\\.nuget\\packages\\microsoft.entityframeworkcore.abstractions\\9.0.9\\microsoft.entityframeworkcore.abstractions.9.0.9.nupkg.sha512",
     "C:\\Users\\ginno\\.nuget\\packages\\microsoft.entityframeworkcore.analyzers\\9.0.9\\microsoft.entityframeworkcore.analyzers.9.0.9.nupkg.sha512",
     "C:\\Users\\ginno\\.nuget\\packages\\microsoft.entityframeworkcore.design\\9.0.9\\microsoft.entityframeworkcore.design.9.0.9.nupkg.sha512",
-    "C:\\Users\\ginno\\.nuget\\packages\\microsoft.entityframeworkcore.inmemory\\9.0.9\\microsoft.entityframeworkcore.inmemory.9.0.9.nupkg.sha512",
     "C:\\Users\\ginno\\.nuget\\packages\\microsoft.entityframeworkcore.relational\\9.0.9\\microsoft.entityframeworkcore.relational.9.0.9.nupkg.sha512",
     "C:\\Users\\ginno\\.nuget\\packages\\microsoft.entityframeworkcore.tools\\9.0.9\\microsoft.entityframeworkcore.tools.9.0.9.nupkg.sha512",
     "C:\\Users\\ginno\\.nuget\\packages\\microsoft.extensions.apidescription.server\\9.0.0\\microsoft.extensions.apidescription.server.9.0.0.nupkg.sha512",
@@ -35,6 +34,8 @@
     "C:\\Users\\ginno\\.nuget\\packages\\microsoft.extensions.primitives\\9.0.9\\microsoft.extensions.primitives.9.0.9.nupkg.sha512",
     "C:\\Users\\ginno\\.nuget\\packages\\microsoft.openapi\\1.6.25\\microsoft.openapi.1.6.25.nupkg.sha512",
     "C:\\Users\\ginno\\.nuget\\packages\\mono.texttemplating\\3.0.0\\mono.texttemplating.3.0.0.nupkg.sha512",
+    "C:\\Users\\ginno\\.nuget\\packages\\oracle.entityframeworkcore\\9.23.60\\oracle.entityframeworkcore.9.23.60.nupkg.sha512",
+    "C:\\Users\\ginno\\.nuget\\packages\\oracle.manageddataaccess.core\\23.6.1\\oracle.manageddataaccess.core.23.6.1.nupkg.sha512",
     "C:\\Users\\ginno\\.nuget\\packages\\swashbuckle.aspnetcore\\9.0.4\\swashbuckle.aspnetcore.9.0.4.nupkg.sha512",
     "C:\\Users\\ginno\\.nuget\\packages\\swashbuckle.aspnetcore.swagger\\9.0.4\\swashbuckle.aspnetcore.swagger.9.0.4.nupkg.sha512",
     "C:\\Users\\ginno\\.nuget\\packages\\swashbuckle.aspnetcore.swaggergen\\9.0.4\\swashbuckle.aspnetcore.swaggergen.9.0.4.nupkg.sha512",
@@ -47,11 +48,31 @@
     "C:\\Users\\ginno\\.nuget\\packages\\system.composition.hosting\\7.0.0\\system.composition.hosting.7.0.0.nupkg.sha512",
     "C:\\Users\\ginno\\.nuget\\packages\\system.composition.runtime\\7.0.0\\system.composition.runtime.7.0.0.nupkg.sha512",
     "C:\\Users\\ginno\\.nuget\\packages\\system.composition.typedparts\\7.0.0\\system.composition.typedparts.7.0.0.nupkg.sha512",
+    "C:\\Users\\ginno\\.nuget\\packages\\system.configuration.configurationmanager\\8.0.0\\system.configuration.configurationmanager.8.0.0.nupkg.sha512",
+    "C:\\Users\\ginno\\.nuget\\packages\\system.diagnostics.eventlog\\8.0.0\\system.diagnostics.eventlog.8.0.0.nupkg.sha512",
+    "C:\\Users\\ginno\\.nuget\\packages\\system.diagnostics.performancecounter\\8.0.0\\system.diagnostics.performancecounter.8.0.0.nupkg.sha512",
+    "C:\\Users\\ginno\\.nuget\\packages\\system.directoryservices.protocols\\8.0.0\\system.directoryservices.protocols.8.0.0.nupkg.sha512",
+    "C:\\Users\\ginno\\.nuget\\packages\\system.formats.asn1\\8.0.1\\system.formats.asn1.8.0.1.nupkg.sha512",
     "C:\\Users\\ginno\\.nuget\\packages\\system.io.pipelines\\7.0.0\\system.io.pipelines.7.0.0.nupkg.sha512",
     "C:\\Users\\ginno\\.nuget\\packages\\system.reflection.metadata\\7.0.0\\system.reflection.metadata.7.0.0.nupkg.sha512",
     "C:\\Users\\ginno\\.nuget\\packages\\system.runtime.compilerservices.unsafe\\6.0.0\\system.runtime.compilerservices.unsafe.6.0.0.nupkg.sha512",
+    "C:\\Users\\ginno\\.nuget\\packages\\system.security.cryptography.pkcs\\8.0.0\\system.security.cryptography.pkcs.8.0.0.nupkg.sha512",
+    "C:\\Users\\ginno\\.nuget\\packages\\system.security.cryptography.protecteddata\\8.0.0\\system.security.cryptography.protecteddata.8.0.0.nupkg.sha512",
     "C:\\Users\\ginno\\.nuget\\packages\\system.text.json\\9.0.9\\system.text.json.9.0.9.nupkg.sha512",
     "C:\\Users\\ginno\\.nuget\\packages\\system.threading.channels\\7.0.0\\system.threading.channels.7.0.0.nupkg.sha512"
   ],
-  "logs": []
+  "logs": [
+    {
+      "code": "NU1603",
+      "level": "Warning",
+      "message": "InvestmentAPI depends on Oracle.EntityFrameworkCore (>= 9.23.50) but Oracle.EntityFrameworkCore 9.23.50 was not found. Oracle.EntityFrameworkCore 9.23.60 was resolved instead.",
+      "projectPath": "C:\\Users\\ginno\\OneDrive\\facul\\aaa c#\\InvestmentAPI\\InvestmentAPI.csproj",
+      "warningLevel": 1,
+      "filePath": "C:\\Users\\ginno\\OneDrive\\facul\\aaa c#\\InvestmentAPI\\InvestmentAPI.csproj",
+      "libraryId": "Oracle.EntityFrameworkCore",
+      "targetGraphs": [
+        "net9.0"
+      ]
+    }
+  ]
 }

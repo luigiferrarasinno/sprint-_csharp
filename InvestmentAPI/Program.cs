@@ -14,9 +14,13 @@ builder.Services.AddControllers()
         options.JsonSerializerOptions.WriteIndented = true;
     });
 
-// Add Entity Framework with In-Memory Database (simulating H2)
+// Add Entity Framework with Oracle Database
 builder.Services.AddDbContext<InvestmentDbContext>(options =>
-    options.UseInMemoryDatabase("InvestmentDB"));
+{
+    options.UseOracle("Data Source=oracle.fiap.com.br:1521/ORCL;User Id=RM98047;Password=201104;Connection Timeout=30;");
+    options.EnableSensitiveDataLogging();
+    options.LogTo(Console.WriteLine, LogLevel.Information);
+});
 
 // Register Repositories
 builder.Services.AddScoped<IUserRepository, UserRepository>();
@@ -67,13 +71,6 @@ app.UseSwaggerUI(c =>
     c.RoutePrefix = string.Empty; // Para acessar o Swagger na raiz
     c.DocumentTitle = "Investment API - Swagger UI";
 });
-
-// Ensure database is created and seeded
-using (var scope = app.Services.CreateScope())
-{
-    var context = scope.ServiceProvider.GetRequiredService<InvestmentDbContext>();
-    context.Database.EnsureCreated();
-}
 
 app.UseCors("AllowAll");
 app.UseHttpsRedirection();

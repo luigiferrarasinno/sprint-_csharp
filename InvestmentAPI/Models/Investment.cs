@@ -15,10 +15,8 @@ namespace InvestmentAPI.Models
         [StringLength(50)]
         public string Type { get; set; } = string.Empty; // Ex: Ação, Tesouro, CDB, etc.
         
-        [Column(TypeName = "decimal(18,2)")]
         public decimal Amount { get; set; }
         
-        [Column(TypeName = "decimal(5,2)")]
         public decimal? ExpectedReturn { get; set; } // Percentual de retorno esperado
         
         public DateTime InvestmentDate { get; set; } = DateTime.UtcNow;

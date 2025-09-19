@@ -44,6 +44,13 @@ namespace InvestmentAPI.Repositories
 
         public async Task<Investment> AddAsync(Investment investment)
         {
+            // Gerar ID manualmente - buscar o próximo ID disponível
+            var lastId = await _context.Investments
+                .OrderByDescending(i => i.Id)
+                .Select(i => i.Id)
+                .FirstOrDefaultAsync();
+            
+            investment.Id = lastId + 1;
             investment.InvestmentDate = DateTime.UtcNow;
             _context.Investments.Add(investment);
             await _context.SaveChangesAsync();
