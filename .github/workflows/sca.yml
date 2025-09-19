@@ -11,10 +11,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout do código
-        uses: actions/checkout@v3
+        uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744
 
       - name: Setup .NET
-        uses: actions/setup-dotnet@v3
+        uses: actions/setup-dotnet@55ec9447dda3d1cf6bd587150f3262f30ee10815
         with:
           dotnet-version: '8.0.x'
 
@@ -30,13 +30,13 @@ jobs:
             snyk-to-sarif -i snyk-report.json -o snyk-report.sarif
             
       - name: Upload do relatório
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
           name: snyk-report
           path: snyk-report.json
 
       - name: Upload SARIF report
-        uses: github/codeql-action/upload-sarif@v3
+        uses: github/codeql-action/upload-sarif@528ca598d956c91826bd742262cdfc5d02b77710
         with:
             sarif_file: snyk-report.sarif
             github_token: ${{ secrets.GITHUB_TOKEN }}
