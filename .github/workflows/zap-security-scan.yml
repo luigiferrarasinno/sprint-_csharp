@@ -1,0 +1,30 @@
+name: OWASP ZAP Security Scan
+
+on:
+  push:
+    branches:
+      - main  # Ou outro branch que você preferir
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  zap-scan:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Docker for OWASP ZAP
+      uses: docker/setup-buildx-action@v1
+
+    - name: Run OWASP ZAP Baseline Scan
+      run: |
+        docker run --rm -t owasp/zap2docker-stable zap-baseline.py -t https://github.com/luigiferrarasinno/sprint-_csharp.git>
+        
+    - name: Upload ZAP Report as Artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: zap-report
+        path: zap-report.html

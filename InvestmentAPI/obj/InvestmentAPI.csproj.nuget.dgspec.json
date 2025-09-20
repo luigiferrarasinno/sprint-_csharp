@@ -1,25 +1,32 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\ginno\\OneDrive\\facul\\aaa c#\\InvestmentAPI\\InvestmentAPI.csproj": {}
+    "C:\\Users\\labsfiap\\Desktop\\sprint-_csharp\\InvestmentAPI\\InvestmentAPI.csproj": {}
   },
   "projects": {
-    "C:\\Users\\ginno\\OneDrive\\facul\\aaa c#\\InvestmentAPI\\InvestmentAPI.csproj": {
+    "C:\\Users\\labsfiap\\Desktop\\sprint-_csharp\\InvestmentAPI\\InvestmentAPI.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\ginno\\OneDrive\\facul\\aaa c#\\InvestmentAPI\\InvestmentAPI.csproj",
+        "projectUniqueName": "C:\\Users\\labsfiap\\Desktop\\sprint-_csharp\\InvestmentAPI\\InvestmentAPI.csproj",
         "projectName": "InvestmentAPI",
-        "projectPath": "C:\\Users\\ginno\\OneDrive\\facul\\aaa c#\\InvestmentAPI\\InvestmentAPI.csproj",
-        "packagesPath": "C:\\Users\\ginno\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\ginno\\OneDrive\\facul\\aaa c#\\InvestmentAPI\\obj\\",
+        "projectPath": "C:\\Users\\labsfiap\\Desktop\\sprint-_csharp\\InvestmentAPI\\InvestmentAPI.csproj",
+        "packagesPath": "C:\\Users\\labsfiap\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\labsfiap\\Desktop\\sprint-_csharp\\InvestmentAPI\\obj\\",
         "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
         "configFilePaths": [
-          "C:\\Users\\ginno\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "C:\\Users\\labsfiap\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
           "net9.0"
         ],
         "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
