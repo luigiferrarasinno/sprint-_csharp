@@ -9,9 +9,10 @@ on:
 jobs:
   zap-scan:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout code
-        uses: actions/checkout@<commit-SHA>
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a74866e7a3 # v5.1.0
 
       - name: Run OWASP ZAP Baseline Scan
         run: |
@@ -19,11 +20,11 @@ jobs:
             -v ${{ github.workspace }}:/zap/wrk \
             -t ghcr.io/zaproxy/zaproxy \
             zap-baseline.py \
-            -t https://sua-aplicacao-em-execucao.com \
+            -t http://localhost:5090 \
             -r zap-report.html
 
       - name: Upload ZAP Report as Artifact
-        uses: actions/upload-artifact@<commit-SHA>
+        uses: actions/upload-artifact@26f96dfa697d78a254ebef8b491950b5c9a9c7c4 # v4.3.0
         with:
           name: zap-report
           path: zap-report.html
