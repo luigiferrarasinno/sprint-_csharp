@@ -11,8 +11,8 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      -  name: Checkout code
-         uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8
+      - name: Checkout code
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8
 
       - name: Run OWASP ZAP Baseline Scan
         run: |
@@ -24,7 +24,7 @@ jobs:
             -r zap-report.html
 
       - name: Upload ZAP Report as Artifact
-        uses: actions/upload-artifact@26f96dfa697d78a254ebef8b491950b5c9a9c7c4 # v4.3.0
+        uses: actions/upload-artifact@08eba0b27e820071cde6df949e0beb9ba4906955
         with:
           name: zap-report
           path: zap-report.html
