@@ -24,7 +24,9 @@ jobs:
             -r zap-report.html
 
       - name: Upload ZAP Report as Artifact
-        uses: actions/upload-artifact@08eba0b27e820071cde6df949e0beb9ba4906955
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
           name: zap-report
           path: zap-report.html
+
+
