@@ -21,7 +21,7 @@ jobs:
 
     - name: Run OWASP ZAP Baseline Scan
       run: |
-        docker run --rm -t owasp/zap2docker-stable zap-baseline.py -t https://github.com/luigiferrarasinno/sprint-_csharp.git>
+        docker run --rm -t owasp/zap2docker-stable zap-baseline.py -t https://github.com/luigiferrarasinno/sprint-_csharp.git
         
     - name: Upload ZAP Report as Artifact
       uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
