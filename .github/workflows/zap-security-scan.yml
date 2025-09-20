@@ -23,7 +23,7 @@ jobs:
         run: |
           dotnet build
           nohup dotnet run --urls http://0.0.0.0:5090 &
-          sleep 10
+          sleep 60
 
       - name: Run OWASP ZAP Baseline Scan
         run: |
