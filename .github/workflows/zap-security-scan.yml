@@ -14,22 +14,19 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744
-
-      - name: Set up Docker for OWASP ZAP
-        uses: docker/setup-buildx-action@1583c0f09d26c58c59d25b0eef29792b7ce99d9a
+        uses: actions/checkout@v3
 
       - name: Run OWASP ZAP Baseline Scan
         run: |
           docker run --rm \
             -v ${{ github.workspace }}:/zap/wrk \
-            -t owasp/zap2docker-stable \
+            -t ghcr.io/zaproxy/zaproxy \
             zap-baseline.py \
             -t https://sua-aplicacao-em-execucao.com \
             -r zap-report.html
 
       - name: Upload ZAP Report as Artifact
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        uses: actions/upload-artifact@v3
         with:
           name: zap-report
           path: zap-report.html
