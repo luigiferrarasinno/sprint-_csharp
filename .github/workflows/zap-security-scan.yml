@@ -30,6 +30,7 @@ jobs:
           chmod -R 777 $GITHUB_WORKSPACE
           docker run --rm \
             --user root \
+            --network host \
             -v ${{ github.workspace }}:/zap/wrk \
             ghcr.io/zaproxy/zaproxy \
             zap-baseline.py \
