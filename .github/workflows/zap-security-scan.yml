@@ -3,7 +3,7 @@ name: OWASP ZAP Security Scan
 on:
   push:
     branches:
-      - main  #branch
+      - main
   pull_request:
     branches:
       - main
@@ -23,7 +23,7 @@ jobs:
         run: |
           docker run --rm \
             -v ${{ github.workspace }}:/zap/wrk \
-            -t ghcr.io/zaproxy/zap2docker-stable \
+            -t owasp/zap2docker-stable \
             zap-baseline.py \
             -t https://sua-aplicacao-em-execucao.com \
             -r zap-report.html
