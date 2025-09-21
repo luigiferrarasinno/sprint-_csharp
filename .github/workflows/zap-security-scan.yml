@@ -27,16 +27,18 @@ jobs:
 
       - name: Run OWASP ZAP Baseline Scan
         run: |
-          chmod -R 777 $GITHUB_WORKSPACE
           docker run --rm \
-            --user root \
             --network host \
             -v ${{ github.workspace }}:/zap/wrk \
             ghcr.io/zaproxy/zaproxy \
             zap-baseline.py \
             -t http://localhost:5090 \
-            -r /zap/wrk/zap-report.html \
+            -r zap-report.html \
+            --output-dir /zap/wrk \
             --fail-on error || true
+
+      - name: List files for debug
+        run: ls -la ${{ github.workspace }}
 
       - name: Upload ZAP Report as Artifact
         if: always()
