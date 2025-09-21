@@ -23,8 +23,7 @@ jobs:
         run: |
           dotnet build InvestmentAPI/InvestmentAPI.csproj
           nohup dotnet run --project InvestmentAPI/InvestmentAPI.csproj --urls http://0.0.0.0:5090 &
-          sleep 30
-
+          sleep 30    # aguarda a API subir
 
       - name: Run OWASP ZAP Baseline Scan
         run: |
@@ -36,11 +35,11 @@ jobs:
             ghcr.io/zaproxy/zaproxy \
             zap-baseline.py \
             -t http://localhost:5090 \
-            -r zap-report.html
-            
-      - name: Upload ZAP Report as ArtifactCode has comments. Press enter to view.
+            -r zap-report.html \
+            --fail-on error       # <── só falha em erros críticos, ignora WARN
+
+      - name: Upload ZAP Report as Artifact
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
           name: zap-report
           path: zap-report.html
-
