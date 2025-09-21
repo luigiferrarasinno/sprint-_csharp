@@ -58,49 +58,8 @@ Uma API REST completa para gerenciamento de usuários e investimentos, desenvolv
 
 #### 🔄 Diagrama de Fluxo de Dados
 
-```mermaid
-sequenceDiagram
-    participant Client as 📱 Cliente
-    participant Controller as 🎯 Controller
-    participant Service as 🔧 Service
-    participant Repository as 📂 Repository
-    participant DB as 🗄️ Oracle DB
-    
-    Client->>Controller: HTTP Request
-    Controller->>Service: Business Logic Call
-    Service->>Repository: Data Operation
-    Repository->>DB: SQL Query
-    DB-->>Repository: Result Set
-    Repository-->>Service: Domain Objects
-    Service-->>Controller: Processed Data
-    Controller-->>Client: HTTP Response (JSON)
-```
+<img width="1146" height="601" alt="image" src="https://github.com/user-attachments/assets/de77cc6f-f6de-4c22-9a83-89c6aa71b73e" />
 
-#### 🔗 Diagrama de Relacionamentos do Banco
-
-```mermaid
-erDiagram
-    USERS {
-        NUMBER ID PK
-        VARCHAR2 NAME
-        VARCHAR2 EMAIL UK
-        VARCHAR2 PHONE
-        DATE CREATED_AT
-    }
-    
-    INVESTMENTS {
-        NUMBER ID PK
-        VARCHAR2 NAME
-        VARCHAR2 TYPE
-        NUMBER AMOUNT
-        NUMBER EXPECTED_RETURN
-        DATE INVESTMENT_DATE
-        VARCHAR2 DESCRIPTION
-        NUMBER USER_ID FK
-    }
-    
-    USERS ||--o{ INVESTMENTS : "possui"
-```
 
 ## 🚀 Como Executar
 
@@ -559,6 +518,7 @@ POST /api/Investments
 - **Repository Pattern** - Padrão de acesso a dados
 - **Service Layer Pattern** - Camada de lógica de negócio
 - **Dependency Injection** - Inversão de controle
+
 
 
 
