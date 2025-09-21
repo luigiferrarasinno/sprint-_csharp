@@ -69,7 +69,7 @@ jobs:
             zap-baseline.py \
             -t http://localhost:5090 \
             -r zap-report.html \
-            --exit-code False
+            -I
 
       - name: Upload ZAP report
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
