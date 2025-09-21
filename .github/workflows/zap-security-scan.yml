@@ -33,8 +33,7 @@ jobs:
             ghcr.io/zaproxy/zaproxy \
             zap-baseline.py \
             -t http://localhost:5090 \
-            -r zap-report.html \
-            --output-dir /zap/wrk \
+            -r /zap/wrk/zap-report.html \
             --fail-on error || true
 
       - name: List files for debug
@@ -45,4 +44,4 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: zap-report
-          path: ${{ github.workspace }}/zap-report.html
+          path: ${{ github.workspace }}/zap-
