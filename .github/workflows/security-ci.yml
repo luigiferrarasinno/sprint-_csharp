@@ -25,7 +25,7 @@ jobs:
           dotnet-version: '9.0.x'
 
       - name: Run SAST (CodeQL)
-        uses: uses: github/codeql-action/analyze@0b79919a68cdd50d5d4a72b3a8a8ce5e9e4b88e4
+        uses: github/codeql-action/analyze@0b79919a68cdd50d5d4a72b3a8a8ce5e9e4b88e4
         with:
           category: '/language:csharp'
 
