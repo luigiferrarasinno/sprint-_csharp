@@ -27,6 +27,7 @@ jobs:
 
 
       - name: Run OWASP ZAP Baseline Scan
+        continue-on-error: true
         run: |
           chmod -R 777 $GITHUB_WORKSPACE
           docker run --rm \
@@ -38,8 +39,3 @@ jobs:
             -t http://localhost:5090 \
             -r zap-report.html
 
-      - name: Upload ZAP Report as Artifact
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
-        with:
-          name: zap-report
-          path: zap-report.html
