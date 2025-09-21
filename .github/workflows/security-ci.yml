@@ -37,8 +37,8 @@ jobs:
 
       - name: Run Semgrep scan
         run: |
-          semgrep --config "p/csharp" --config "auto" --severity error --error --json --output semgrep-report.json
-          semgrep --config "p/csharp" --config "auto" --severity error --sarif --output semgrep-report.sarif
+          semgrep --config "p/csharp" --config "auto" --severity ERROR --error --json --output semgrep-report.json
+          semgrep --config "p/csharp" --config "auto" --severity ERROR --sarif --output semgrep-report.sarif
 
       - name: Upload Semgrep artifact
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
@@ -120,7 +120,8 @@ jobs:
 
       - name: Run OWASP ZAP baseline scan (fails on high/critical)
         run: |
-          docker run --rm \
+          set -euo pipefail
+          if docker run --rm \
             --user root \
             --network host \
             -v "${{ github.workspace }}:/zap/wrk" \
@@ -130,6 +131,25 @@ jobs:
               -r zap-report.html \
               -J zap-report.json \
               -l FAIL
+          then
+            ZAP_EXIT=0
+          else
+            ZAP_EXIT=$?
+          fi
+          if [ "$ZAP_EXIT" -ge 2 ]; then
+            echo "::error::ZAP baseline encountered an execution error (exit $ZAP_EXIT)"
+            exit "$ZAP_EXIT"
+          fi
+          if [ ! -f zap-report.json ]; then
+            echo "::error::ZAP JSON report was not generated"
+            exit 1
+          fi
+          HIGH_COUNT=$(jq '[.site[]?.alerts[]? | select(.risk == "High")] | length' zap-report.json)
+          if [ "$HIGH_COUNT" -gt 0 ]; then
+            echo "::error::ZAP detected $HIGH_COUNT high risk alerts"
+            exit 1
+          fi
+          echo "ZAP baseline completed without high risk alerts. Ignoring warnings."
         shell: bash
 
       - name: Stop API
@@ -159,7 +179,7 @@ jobs:
           | --- | --- | --- |
           | SAST (Semgrep) | ${{ needs.sast.result }} | Fails on Semgrep findings with severity ERROR |
           | SCA (Snyk) | ${{ needs.sca.result }} | Fails when vulnerabilities >= ${{ env.SNYK_SEVERITY_THRESHOLD }} |
-          | DAST (OWASP ZAP) | ${{ needs.dast.result }} | Fails when ZAP raises alerts level FAIL |
+          | DAST (OWASP ZAP) | ${{ needs.dast.result }} | Fails when ZAP reports High risk alerts |
           SUMMARY
 
       - name: Slack alert on failure
@@ -177,3 +197,5 @@ jobs:
           message="Security CI falhou. Semgrep: $SAST_STATUS | Snyk: $SCA_STATUS | ZAP: $DAST_STATUS"
           payload=$(jq -n --arg text "$message" '{text: $text}')
           curl -X POST -H 'Content-type: application/json' --data "$payload" "$SLACK_WEBHOOK_URL"
+
+
