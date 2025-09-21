@@ -1,0 +1,78 @@
+name: Security CI/CD
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  security-tests:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write
+
+    steps:
+      # 1. Checkout
+      - name: Checkout source
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8
+
+      # 2. Setup .NET 9 SDK
+      - name: Setup .NET 9 SDK
+        uses: actions/setup-dotnet@67a3573c9a986a3f9c594539f4ab511d57bb3ce9
+        with:
+          dotnet-version: '9.0.x'
+
+      - name: Run SAST (CodeQL)
+        uses: github/codeql-action/analyze@v2
+        with:
+          category: '/language:csharp'
+
+      - name: Run Dependency Scanning (SCA)
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: fs
+          format: table
+          severity: CRITICAL,HIGH
+          exit-code: 1
+          ignore-unfixed: true
+          vuln-type: library
+          path: .
+
+      - name: Build and run API
+        run: |
+          dotnet build InvestmentAPI/InvestmentAPI.csproj
+          nohup dotnet run --project InvestmentAPI/InvestmentAPI.csproj --urls http://0.0.0.0:5090 &
+          sleep 30
+
+      - name: Run OWASP ZAP Baseline (DAST)
+        run: |
+          chmod -R 777 $GITHUB_WORKSPACE
+          docker run --rm \
+            --user root \
+            --network host \
+            -v ${{ github.workspace }}:/zap/wrk \
+            ghcr.io/zaproxy/zaproxy \
+            zap-baseline.py \
+            -t http://localhost:5090 \
+            -r zap-report.html \
+            --exit-code False
+      - name: Upload ZAP report
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: zap-report
+          path: zap-report.html
+
+      - name: Comment result in PR
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const body = "✅ SAST, SCA e DAST executados.\n\n- Veja artefatos para detalhes.";
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body
+            })
