@@ -23,12 +23,12 @@ jobs:
           dotnet-version: '9.0.x'
 
       - name: Run SAST (CodeQL)
-        uses: github/codeql-action/analyze@0b79919a68cdd50d5d4a72b3a8a8ce5e9e4b88e4
+        uses: github/codeql-action/analyze@0337c4c06e7e00d0d6e64396c13b9dc18dd6d8c5
         with:
           category: '/language:csharp'
 
       - name: Run Dependency Scanning (SCA)
-        uses: aquasecurity/trivy-action@b5b790a89ccab43dc95c01a30a4db7f83f41a1b2
+        uses: aquasecurity/trivy-action@b6643a29fecd7f34b3597bc6acb0a98b03d33ff8
         with:
           scan-type: fs
           format: table
@@ -65,7 +65,7 @@ jobs:
 
       - name: Comment result in PR
         if: github.event_name == 'pull_request'
-        uses: actions/github-script@f2ddc2cba78e287b6122bdbf08c8193df46fe1da
+        uses: actions/github-script@adc0eeac992408a7b276994ca87edde1c8ce4d25
         with:
           script: |
             const body = "✅ SAST, SCA e DAST executados.\n\n- Veja artefatos para detalhes.";
