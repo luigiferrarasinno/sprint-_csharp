@@ -1,92 +1,179 @@
-name: Security CI/CD
+name: Security CI
 
 on:
   push:
-    branches: [main]
+    branches: ["main"]
   pull_request:
-    branches: [main]
+    branches: ["main"]
+  workflow_dispatch:
+
+permissions:
+  actions: read
+  contents: read
+  security-events: write
+
+env:
+  DOTNET_VERSION: "9.0.x"
+  SERVICE_URL: http://127.0.0.1:5090
+  SNYK_SEVERITY_THRESHOLD: high
 
 jobs:
-  security-tests:
+  sast:
+    name: SAST - Semgrep
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      security-events: write
-
     steps:
-      # 1. Checkout
-      - name: Checkout source
-        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8
+      - name: Checkout repository
+        uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744
 
-      # 2. Setup .NET 9 SDK
-      - name: Setup .NET 9 SDK
-        uses: actions/setup-dotnet@67a3573c9a986a3f9c594539f4ab511d57bb3ce9
+      - name: Setup Python
+        uses: actions/setup-python@39cd14951b08e74b54015e9e001cdefcf80e669f
         with:
-          dotnet-version: '9.0.x'
+          python-version: "3.x"
 
-      # ---------- SAST (CodeQL) ----------
-      - name: Initialize CodeQL
-        uses: github/codeql-action/init@0337c4c06e7e00d0d6e64396c13b9dc18dd6d8c5
-        with:
-          languages: csharp
-
-      - name: Autobuild CodeQL database
-        uses: github/codeql-action/autobuild@0337c4c06e7e00d0d6e64396c13b9dc18dd6d8c5
-
-      - name: Analyze CodeQL results
-        uses: github/codeql-action/analyze@0337c4c06e7e00d0d6e64396c13b9dc18dd6d8c5
-        with:
-          category: '/language:csharp'
-
-      # ---------- SCA ----------
-      - name: Run Dependency Scanning (SCA)
-        uses: aquasecurity/trivy-action@b6643a29fecd7f34b3597bc6acb0a98b03d33ff8
-        with:
-          scan-type: fs
-          format: table
-          severity: CRITICAL,HIGH
-          exit-code: 1
-          ignore-unfixed: true
-          vuln-type: library
-          path: .
-
-      # ---------- Build & run API ----------
-      - name: Build and run API
+      - name: Install Semgrep
         run: |
-          dotnet build InvestmentAPI/InvestmentAPI.csproj
-          nohup dotnet run --project InvestmentAPI/InvestmentAPI.csproj --urls http://0.0.0.0:5090 &
-          sleep 30
+          python -m pip install --upgrade pip
+          pip install semgrep
 
-      # ---------- DAST ----------
-      - name: Run OWASP ZAP Baseline (DAST)
+      - name: Run Semgrep scan
         run: |
-          chmod -R 777 $GITHUB_WORKSPACE
+          semgrep --config "p/csharp" --config "auto" --severity error --error --json --output semgrep-report.json
+          semgrep --config "p/csharp" --config "auto" --severity error --sarif --output semgrep-report.sarif
+
+      - name: Upload Semgrep artifact
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: semgrep-report
+          path: |
+            semgrep-report.json
+            semgrep-report.sarif
+
+      - name: Publish Semgrep SARIF to security dashboard
+        uses: github/codeql-action/upload-sarif@528ca598d956c91826bd742262cdfc5d02b77710
+        with:
+          sarif_file: semgrep-report.sarif
+
+  sca:
+    name: SCA - Snyk
+    runs-on: ubuntu-latest
+    env:
+      SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744
+
+      - name: Setup Node
+        uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8
+        with:
+          node-version: "20"
+
+      - name: Install Snyk CLI
+        run: npm install -g snyk
+
+      - name: Authenticate Snyk
+        run: snyk auth "$SNYK_TOKEN"
+
+      - name: Run Snyk test (fails on high/critical)
+        run: |
+          snyk test --all-projects --severity-threshold="$SNYK_SEVERITY_THRESHOLD" --json-file-output=snyk-report.json --sarif-file-output=snyk-report.sarif
+
+      - name: Upload Snyk artifact
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: snyk-report
+          path: |
+            snyk-report.json
+            snyk-report.sarif
+
+      - name: Publish Snyk SARIF to security dashboard
+        uses: github/codeql-action/upload-sarif@528ca598d956c91826bd742262cdfc5d02b77710
+        with:
+          sarif_file: snyk-report.sarif
+
+  dast:
+    name: DAST - OWASP ZAP
+    runs-on: ubuntu-latest
+    needs: [sast, sca]
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@55ec9447dda3d1cf6bd587150f3262f30ee10815
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+
+      - name: Restore and build API
+        run: |
+          dotnet restore InvestmentAPI/InvestmentAPI.csproj
+          dotnet build InvestmentAPI/InvestmentAPI.csproj --configuration Release
+
+      - name: Launch API for scanning
+        run: |
+          dotnet run --project InvestmentAPI/InvestmentAPI.csproj --configuration Release --urls "$SERVICE_URL" &
+          for i in {1..30}; do
+            if curl --silent --fail "$SERVICE_URL" >/dev/null; then
+              break
+            fi
+            sleep 2
+          done
+
+      - name: Run OWASP ZAP baseline scan (fails on high/critical)
+        run: |
           docker run --rm \
             --user root \
             --network host \
-            -v ${{ github.workspace }}:/zap/wrk \
-            ghcr.io/zaproxy/zaproxy \
+            -v "${{ github.workspace }}:/zap/wrk" \
+            ghcr.io/zaproxy/zaproxy:stable \
             zap-baseline.py \
-            -t http://localhost:5090 \
-            -r zap-report.html \
-            -I
+              -t "$SERVICE_URL" \
+              -r zap-report.html \
+              -J zap-report.json \
+              -l FAIL
+        shell: bash
 
-      - name: Upload ZAP report
+      - name: Stop API
+        if: always()
+        run: pkill dotnet || true
+
+      - name: Upload ZAP artifacts
+        if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
           name: zap-report
-          path: zap-report.html
+          path: |
+            zap-report.html
+            zap-report.json
 
-      # ---------- Notificação no PR ----------
-      - name: Comment result in PR
-        if: github.event_name == 'pull_request'
-        uses: actions/github-script@adc0eeac992408a7b276994ca87edde1c8ce4d25
-        with:
-          script: |
-            const body = "✅ SAST, SCA e DAST executados.\n\n- Veja artefatos para detalhes.";
-            github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body
-            })
+  summary-and-notify:
+    name: Security summary & notification
+    if: always()
+    needs: [sast, sca, dast]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Append security scan summary
+        run: |
+          cat <<SUMMARY >> "$GITHUB_STEP_SUMMARY"
+          ## Security scan overview
+          | Check | Status | High/Critical gating |
+          | --- | --- | --- |
+          | SAST (Semgrep) | ${{ needs.sast.result }} | Fails on Semgrep findings with severity ERROR |
+          | SCA (Snyk) | ${{ needs.sca.result }} | Fails when vulnerabilities >= ${{ env.SNYK_SEVERITY_THRESHOLD }} |
+          | DAST (OWASP ZAP) | ${{ needs.dast.result }} | Fails when ZAP raises alerts level FAIL |
+          SUMMARY
+
+      - name: Slack alert on failure
+        if: failure()
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          SAST_STATUS: ${{ needs.sast.result }}
+          SCA_STATUS: ${{ needs.sca.result }}
+          DAST_STATUS: ${{ needs.dast.result }}
+        run: |
+          if [ -z "$SLACK_WEBHOOK_URL" ]; then
+            echo "SLACK_WEBHOOK_URL not set; skipping Slack notification."
+            exit 0
+          fi
+          message="Security CI falhou. Semgrep: $SAST_STATUS | Snyk: $SCA_STATUS | ZAP: $DAST_STATUS"
+          payload=$(jq -n --arg text "$message" '{text: $text}')
+          curl -X POST -H 'Content-type: application/json' --data "$payload" "$SLACK_WEBHOOK_URL"
