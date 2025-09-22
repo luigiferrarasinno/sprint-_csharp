@@ -23,10 +23,10 @@ jobs:
         run: |
           dotnet build InvestmentAPI/InvestmentAPI.csproj
           nohup dotnet run --project InvestmentAPI/InvestmentAPI.csproj --urls http://0.0.0.0:5090 &
-          sleep 30
+          sleep 30    # aguarda a API subir
 
       - name: Run OWASP ZAP Baseline Scan
-        continue-on-error: true
+        continue-on-error: true         
         run: |
           chmod -R 777 $GITHUB_WORKSPACE
           docker run --rm \
@@ -36,10 +36,11 @@ jobs:
             ghcr.io/zaproxy/zaproxy \
             zap-baseline.py \
             -t http://localhost:5090 \
-            -r zap-report.html || true
+            -r zap-report.html
+          # removi o --fail-on para não dar exception no workflow
 
       - name: Upload ZAP Report as Artifact
-        if: always()
+        if: always()                     
         uses: actions/upload-artifact@v3
         with:
           name: zap-report
