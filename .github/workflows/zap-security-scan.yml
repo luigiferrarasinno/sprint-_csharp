@@ -12,10 +12,10 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8
 
       - name: Setup .NET 9 SDK
-        uses: actions/setup-dotnet@v3
+        uses: actions/setup-dotnet@67a3573c9a986a3f9c594539f4ab511d57bb3ce9
         with:
           dotnet-version: '9.0.x'
 
@@ -26,22 +26,22 @@ jobs:
           sleep 30    # aguarda a API subir
 
       - name: Run OWASP ZAP Baseline Scan
+        continue-on-error: true         
         run: |
+          chmod -R 777 $GITHUB_WORKSPACE
           docker run --rm \
+            --user root \
             --network host \
             -v ${{ github.workspace }}:/zap/wrk \
             ghcr.io/zaproxy/zaproxy \
             zap-baseline.py \
             -t http://localhost:5090 \
-            -r /zap/wrk/zap-report.html \
-            --fail-on error || true
-
-      - name: List files for debug
-        run: ls -la ${{ github.workspace }}
+            -r zap-report.html \
+            --fail-on error               # mantém a verificação de erro crítico
 
       - name: Upload ZAP Report as Artifact
-        if: always()
-        uses: actions/upload-artifact@v3
+        if: always()                     
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
           name: zap-report
-          path: ${{ github.workspace }}/zap-report.html
+          path: zap-report.html
