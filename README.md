@@ -75,7 +75,7 @@ Uma API REST completa para gerenciamento de usuários e investimentos, desenvolv
 ```bash
 dotnet run
 ```
-4. A API estará disponível em: `http://localhost:5090`
+4. A API estará disponível em: `http://localhost:5090/api`
 5. Swagger UI: `http://localhost:5090`
 
 ## 📊 Banco de Dados Oracle
@@ -698,6 +698,7 @@ POST /api/Investments
 - **Repository Pattern** - Padrão de acesso a dados
 - **Service Layer Pattern** - Camada de lógica de negócio
 - **Dependency Injection** - Inversão de controle
+
 
 
 
