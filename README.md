@@ -81,15 +81,15 @@ dotnet run
 ## 📊 Banco de Dados Oracle
 
 ### Tabelas Criadas
-- **RM98047.USERS**: Usuários do sistema
+- **RM98047.USERS**: Usuários do sistema (com suporte a senha com hash BCrypt)
 - **RM98047.INVESTMENTS**: Investimentos dos usuários
 
 ### Dados de Teste Disponíveis
 ```sql
--- Usuários
-1. João Silva (joao@email.com)
-2. Maria Santos (maria@email.com)  
-3. Pedro Oliveira (pedro@email.com)
+-- Usuários com Autenticação por Senha
+1. João Silva (joao@email.com) - Senha: senha123
+2. Maria Santos (maria@email.com) - Senha: senha456
+3. Pedro Oliveira (pedro@email.com) - Senha: senha789
 
 -- Investimentos
 1. Tesouro Selic (R$ 5.000) - João
@@ -167,7 +167,30 @@ python test_api.py
 
 ## 📚 Documentação dos Endpoints
 
-### 🔐 **Autenticação**
+### 🔐 **Autenticação com Senha**
+
+#### ⚠️ Informações de Segurança
+A API utiliza **autenticação com senha** usando **BCrypt.Net-Next** para hash seguro das senhas (10 rounds). As senhas **nunca** são armazenadas em texto plano. Cada senha é armazenada como um hash criptográfico na coluna `PASSWORDHASH` da tabela `USERS`.
+
+#### Usuários de Teste
+```
+Email: joao@email.com    | Senha: senha123
+Email: maria@email.com   | Senha: senha456
+Email: pedro@email.com   | Senha: senha789
+```
+
+#### Setup do Banco de Dados
+Para criar o banco de dados com suporte a autenticação, execute o script SQL fornecido:
+```bash
+# Execute no SQLDeveloper, SQL*Plus ou ferramenta Oracle:
+@./InvestmentAPI/oracle_setup.sql
+```
+
+Este script:
+- ✅ Cria tabela USERS com coluna `PASSWORDHASH` (VARCHAR2(255), NOT NULL)
+- ✅ Cria tabela INVESTMENTS com relacionamento para USERS
+- ✅ Popula usuários de teste com senhas hasheadas em BCrypt
+- ✅ Popula investimentos de teste
 
 #### `GET /api/Auth/test-users`
 Lista usuários disponíveis para teste de login.
@@ -183,25 +206,64 @@ Lista usuários disponíveis para teste de login.
 ```
 
 #### `POST /api/Auth/login`
-Realiza login no sistema.
+Realiza login no sistema com validação de senha criptografada.
 ```json
 // Request
 {
   "email": "joao@email.com",
-  "password": "qualquer_senha"
+  "password": "senha123"
 }
 
-// Response (200)
+// Response (200 OK)
 {
   "success": true,
   "message": "Login realizado com sucesso",
-  "user": { /* dados do usuário */ },
-  "token": "MTpqb2FvQGVtYWlsLmNvbTo..."
+  "user": { 
+    "id": 1,
+    "name": "João Silva",
+    "email": "joao@email.com",
+    "phone": "(11) 99999-1234",
+    "createdAt": "2025-10-16T10:00:00Z"
+  },
+  "token": "MTpqb2FvQGVtYWlsLmNvbToyMDI1LTEwLTE2VDAx..."
+}
+
+// Response (401 Unauthorized) - Senha inválida
+{
+  "success": false,
+  "message": "Email ou senha inválidos"
+}
+
+// Response (400 Bad Request) - Dados inválidos
+{
+  "success": false,
+  "message": "Email é obrigatório"
 }
 ```
 
 #### `POST /api/Auth/validate-token`
 Valida um token de autenticação.
+```json
+// Request
+"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+
+// Response (200 OK)
+{
+  "success": true,
+  "message": "Token válido",
+  "user": {
+    "id": 1,
+    "name": "João Silva",
+    "email": "joao@email.com"
+  }
+}
+
+// Response (401 Unauthorized)
+{
+  "success": false,
+  "message": "Token inválido"
+}
+```
 
 ---
 
@@ -266,7 +328,74 @@ Remove usuário do sistema.
 
 ---
 
-### 💰 **Investimentos**
+### � **Cotações de Ações (Alpha Vantage)**
+
+#### `GET /api/StockQuotes/quote?symbol=PETR4.SA`
+Consulta a cotação de uma ação em tempo real via API pública do Alpha Vantage.
+
+**Parâmetros:**
+- `symbol` (query, obrigatório): Símbolo da ação (ex: PETR4.SA, VALE3.SA, ITUB4.SA)
+
+**Exemplos de símbolos válidos:**
+```
+PETR4.SA  - Petrobras
+VALE3.SA  - Vale
+ITUB4.SA  - Itaú
+BBDC3.SA  - Bradesco
+USIM5.SA  - Usiminas
+```
+
+**Resposta (200 OK):**
+```json
+{
+  "Global Quote": {
+    "01. symbol": "PETR4.SA",
+    "02. price": "25.45",
+    "03. volume": "1000000",
+    "04. timestamp": "2025-10-16 16:30:00",
+    "05. price change": "+0.45",
+    "06. price change percent": "+1.80%",
+    "07. bid price": "25.43",
+    "08. ask price": "25.47",
+    "09. bid size": "500000",
+    "10. ask size": "500000",
+    "11. trade date": "2025-10-16"
+  }
+}
+```
+
+**Resposta (400 Bad Request) - Símbolo vazio:**
+```json
+{
+  "message": "Símbolo não pode ser vazio",
+  "example": "PETR4.SA"
+}
+```
+
+**Resposta (503 Service Unavailable) - API indisponível:**
+```json
+{
+  "message": "Erro ao consultar API do Alpha Vantage",
+  "error": "API call frequency limit reached",
+  "note": "Note: Thank you for using Alpha Vantage!"
+}
+```
+
+#### `POST /api/StockQuotes/quote`
+Alternativa via POST para consultar cotação (corpo JSON).
+
+**Request:**
+```json
+{
+  "symbol": "PETR4.SA"
+}
+```
+
+**Resposta:** Mesma do endpoint GET acima.
+
+---
+
+### �💰 **Investimentos**
 
 #### `GET /api/Investments`
 Lista todos os investimentos com dados dos usuários.
@@ -350,26 +479,55 @@ python test_api.py
 
 ### Opção 3: cURL
 ```bash
+# ==== AUTENTICAÇÃO ====
+# Listar usuários de teste
+curl http://localhost:5090/api/auth/test-users
+
+# Fazer login
+curl -X POST http://localhost:5090/api/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"email":"joao@email.com","password":"senha123"}'
+
+# Validar token
+curl -X POST http://localhost:5090/api/auth/validate-token \
+  -H "Content-Type: application/json" \
+  -d '"MTpqb2FvQGVtYWlsLmNvbTo..."'
+
+# ==== USUÁRIOS ====
 # Listar usuários
 curl http://localhost:5090/api/users
 
-# Criar usuário
+# Buscar usuário específico
+curl http://localhost:5090/api/users/1
+
+# Criar novo usuário
 curl -X POST http://localhost:5090/api/users \
   -H "Content-Type: application/json" \
-  -d '{"name":"Teste","email":"teste@email.com","phone":"(11)99999-9999"}'
+  -d '{"name":"Novo Usuario","email":"novo@email.com","phone":"(11)99999-9999"}'
 
-# Login
-curl -X POST http://localhost:5090/api/auth/login \
+# ==== COTAÇÕES ====
+# Consultar cotação de ação (GET)
+curl "http://localhost:5090/api/stockquotes/quote?symbol=PETR4.SA"
+
+# Consultar cotação (POST)
+curl -X POST http://localhost:5090/api/stockquotes/quote \
   -H "Content-Type: application/json" \
-  -d '{"email":"joao@email.com","password":"123"}'
+  -d '{"symbol":"PETR4.SA"}'
 
-# Listar investimentos
+# ==== INVESTIMENTOS ====
+# Listar todos os investimentos
 curl http://localhost:5090/api/investments
+
+# Listar investimentos de um usuário
+curl http://localhost:5090/api/investments/by-user/1
+
+# Listar investimentos por tipo
+curl http://localhost:5090/api/investments/by-type/Ação
 
 # Criar investimento
 curl -X POST http://localhost:5090/api/investments \
   -H "Content-Type: application/json" \
-  -d '{"name":"Novo Investimento","type":"Ação","amount":1000,"userId":1}'
+  -d '{"name":"Bitcoin ETF","type":"Criptomoeda","amount":2500,"expectedReturn":25.5,"description":"Investimento em ETF de Bitcoin","userId":1}'
 ```
 
 ### Opção 4: Postman
@@ -452,9 +610,9 @@ A API vem com dados pré-carregados para facilitar os testes:
 ## 🔗 Endpoints da API
 
 ### 🔐 Autenticação
-- `POST /api/Auth/login` - Login do usuário
-- `POST /api/Auth/validate-token` - Validar token
 - `GET /api/Auth/test-users` - Listar usuários disponíveis para teste
+- `POST /api/Auth/login` - Login do usuário (com validação de senha)
+- `POST /api/Auth/validate-token` - Validar token
 
 ### 👤 Usuários
 - `GET /api/Users` - Listar todos os usuários
@@ -463,6 +621,10 @@ A API vem com dados pré-carregados para facilitar os testes:
 - `POST /api/Users` - Criar novo usuário
 - `PUT /api/Users/{id}` - Atualizar usuário
 - `DELETE /api/Users/{id}` - Deletar usuário
+
+### 📈 Cotações de Ações
+- `GET /api/StockQuotes/quote?symbol=PETR4.SA` - Consultar cotação de ação (Alpha Vantage)
+- `POST /api/StockQuotes/quote` - Consultar cotação via POST (Alpha Vantage)
 
 ### 💰 Investimentos
 - `GET /api/Investments` - Listar todos os investimentos
@@ -476,12 +638,28 @@ A API vem com dados pré-carregados para facilitar os testes:
 
 ## 📝 Exemplos de Uso
 
-### Login
+### Login com Senha
 ```json
 POST /api/Auth/login
 {
   "email": "joao@email.com",
-  "password": "qualquer_senha"
+  "password": "senha123"
+}
+```
+
+### Consultar Cotação de Ação
+```bash
+# GET
+curl "http://localhost:5090/api/stockquotes/quote?symbol=PETR4.SA"
+
+# Resposta
+{
+  "Global Quote": {
+    "01. symbol": "PETR4.SA",
+    "02. price": "25.45",
+    "03. volume": "1000000",
+    ...
+  }
 }
 ```
 
@@ -510,10 +688,12 @@ POST /api/Investments
 
 ## 🔧 Tecnologias Utilizadas
 
-- **ASP.NET Core 8.0** - Framework web
+- **ASP.NET Core 9.0** - Framework web
 - **Entity Framework Core** - ORM
 - **Oracle Database** - Banco de dados da FIAP
 - **Swagger/Swashbuckle** - Documentação da API
+- **BCrypt.Net-Next** - Hash seguro de senhas
+- **Alpha Vantage API** - Dados de cotações de ações em tempo real
 - **System.Text.Json** - Serialização JSON
 - **Repository Pattern** - Padrão de acesso a dados
 - **Service Layer Pattern** - Camada de lógica de negócio

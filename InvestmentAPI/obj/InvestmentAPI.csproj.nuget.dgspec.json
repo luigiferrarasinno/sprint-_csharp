@@ -1,32 +1,25 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\labsfiap\\Desktop\\sprint-_csharp\\InvestmentAPI\\InvestmentAPI.csproj": {}
+    "C:\\Users\\ginno\\OneDrive\\facul\\sprint-_csharp\\InvestmentAPI\\InvestmentAPI.csproj": {}
   },
   "projects": {
-    "C:\\Users\\labsfiap\\Desktop\\sprint-_csharp\\InvestmentAPI\\InvestmentAPI.csproj": {
+    "C:\\Users\\ginno\\OneDrive\\facul\\sprint-_csharp\\InvestmentAPI\\InvestmentAPI.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\labsfiap\\Desktop\\sprint-_csharp\\InvestmentAPI\\InvestmentAPI.csproj",
+        "projectUniqueName": "C:\\Users\\ginno\\OneDrive\\facul\\sprint-_csharp\\InvestmentAPI\\InvestmentAPI.csproj",
         "projectName": "InvestmentAPI",
-        "projectPath": "C:\\Users\\labsfiap\\Desktop\\sprint-_csharp\\InvestmentAPI\\InvestmentAPI.csproj",
-        "packagesPath": "C:\\Users\\labsfiap\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\labsfiap\\Desktop\\sprint-_csharp\\InvestmentAPI\\obj\\",
+        "projectPath": "C:\\Users\\ginno\\OneDrive\\facul\\sprint-_csharp\\InvestmentAPI\\InvestmentAPI.csproj",
+        "packagesPath": "C:\\Users\\ginno\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\ginno\\OneDrive\\facul\\sprint-_csharp\\InvestmentAPI\\obj\\",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-        ],
         "configFilePaths": [
-          "C:\\Users\\labsfiap\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+          "C:\\Users\\ginno\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net9.0"
         ],
         "sources": {
-          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -51,6 +44,10 @@
         "net9.0": {
           "targetAlias": "net9.0",
           "dependencies": {
+            "BCrypt.Net-Next": {
+              "target": "Package",
+              "version": "[4.0.3, )"
+            },
             "Microsoft.AspNetCore.OpenApi": {
               "target": "Package",
               "version": "[9.0.5, )"

@@ -1,5 +1,6 @@
 using InvestmentAPI.Models;
 using InvestmentAPI.Repositories;
+using BCrypt.Net;
 
 namespace InvestmentAPI.Services
 {
@@ -48,6 +49,38 @@ namespace InvestmentAPI.Services
 
             if (string.IsNullOrWhiteSpace(user.Email))
                 throw new ArgumentException("Email é obrigatório", nameof(user.Email));
+
+            return await _userRepository.AddAsync(user);
+        }
+
+        public async Task<User> CreateUserAsync(CreateUserRequest request)
+        {
+            // Validar se email já existe
+            if (await _userRepository.EmailExistsAsync(request.Email))
+                throw new InvalidOperationException("Email já está em uso");
+
+            // Validar dados obrigatórios
+            if (string.IsNullOrWhiteSpace(request.Name))
+                throw new ArgumentException("Nome é obrigatório", nameof(request.Name));
+
+            if (string.IsNullOrWhiteSpace(request.Email))
+                throw new ArgumentException("Email é obrigatório", nameof(request.Email));
+
+            if (string.IsNullOrWhiteSpace(request.Password))
+                throw new ArgumentException("Senha é obrigatória", nameof(request.Password));
+
+            // Gerar hash BCrypt da senha
+            var passwordHash = BCrypt.Net.BCrypt.HashPassword(request.Password, 10);
+
+            // Criar usuário com o hash gerado
+            var user = new User
+            {
+                Name = request.Name,
+                Email = request.Email,
+                Phone = request.Phone,
+                PasswordHash = passwordHash,
+                CreatedAt = DateTime.UtcNow
+            };
 
             return await _userRepository.AddAsync(user);
         }

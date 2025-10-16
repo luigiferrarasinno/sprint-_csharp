@@ -54,11 +54,11 @@ namespace InvestmentAPI.Controllers
 
         // POST: api/Users
         [HttpPost]
-        public async Task<ActionResult<User>> CreateUser(User user)
+        public async Task<ActionResult<User>> CreateUser(CreateUserRequest request)
         {
             try
             {
-                var createdUser = await _userService.CreateUserAsync(user);
+                var createdUser = await _userService.CreateUserAsync(request);
                 return CreatedAtAction(nameof(GetUser), new { id = createdUser.Id }, createdUser);
             }
             catch (InvalidOperationException ex)

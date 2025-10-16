@@ -38,6 +38,7 @@ namespace InvestmentAPI.Data
                 entity.Property(e => e.Name).HasColumnName("NAME").HasColumnType("NVARCHAR2(100)");
                 entity.Property(e => e.Email).HasColumnName("EMAIL").HasColumnType("NVARCHAR2(100)");
                 entity.Property(e => e.Phone).HasColumnName("PHONE").HasColumnType("NVARCHAR2(20)");
+                entity.Property(e => e.PasswordHash).HasColumnName("PASSWORDHASH").HasColumnType("NVARCHAR2(255)");
                 entity.Property(e => e.CreatedAt).HasColumnName("CREATEDAT").HasColumnType("TIMESTAMP").HasDefaultValueSql("SYSDATE");
                 
                 // Configurar constraint de email único

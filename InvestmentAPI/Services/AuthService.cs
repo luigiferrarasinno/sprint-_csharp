@@ -1,5 +1,6 @@
 using InvestmentAPI.Models;
 using InvestmentAPI.Repositories;
+using BCrypt.Net;
 
 namespace InvestmentAPI.Services
 {
@@ -45,8 +46,15 @@ namespace InvestmentAPI.Services
                 };
             }
 
-            // Simulação de verificação de senha (na prática, seria hash comparado)
-            // Para demonstração, aceita qualquer senha para usuários existentes
+            // Verificar a senha usando BCrypt
+            if (!BCrypt.Net.BCrypt.Verify(request.Password, user.PasswordHash))
+            {
+                return new LoginResponse
+                {
+                    Success = false,
+                    Message = "Email ou senha inválidos"
+                };
+            }
             
             // Gerar um "token" simulado
             var token = Convert.ToBase64String(
@@ -102,7 +110,7 @@ namespace InvestmentAPI.Services
             
             return new
             {
-                message = "Usuários disponíveis para teste de login (use qualquer senha)",
+                message = "Usuários disponíveis para teste de login",
                 users = users.Select(u => new { u.Id, u.Name, u.Email }).ToList()
             };
         }

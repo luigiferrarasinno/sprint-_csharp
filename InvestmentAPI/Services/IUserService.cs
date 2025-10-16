@@ -9,6 +9,7 @@ namespace InvestmentAPI.Services
         Task<User?> GetUserByEmailAsync(string email);
         Task<IEnumerable<Investment>> GetUserInvestmentsAsync(int userId);
         Task<User> CreateUserAsync(User user);
+        Task<User> CreateUserAsync(CreateUserRequest request);
         Task<User?> UpdateUserAsync(int id, User user);
         Task<bool> DeleteUserAsync(int id);
         Task<bool> ValidateUserExistsAsync(int id);

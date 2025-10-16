@@ -30,6 +30,10 @@ builder.Services.AddScoped<IInvestmentRepository, InvestmentRepository>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IInvestmentService, InvestmentService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IStockQuoteService, StockQuoteService>();
+
+// Add HttpClient for Alpha Vantage API
+builder.Services.AddHttpClient<IStockQuoteService, StockQuoteService>();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnet/swashbuckle
 builder.Services.AddEndpointsApiExplorer();

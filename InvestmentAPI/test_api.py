@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 """
 Script de teste para Investment API
 Testa todos os endpoints da API REST
@@ -6,16 +7,20 @@ Testa todos os endpoints da API REST
 Para executar:
 pip install requests
 python test_api.py
-fiz isso pq é mais facil de rodar e ver o resultado
 """
 
 import requests
 import json
 import time
 from datetime import datetime
+import sys
+import io
+
+# Configurar encoding para suportar emojis
+sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
 
 # Configurações
-BASE_URL = "http://localhost:5090/api"  # Porta onde a API es        print(f"📖 Documentação Swagger: {SWAGGER_URL}")á rodando
+BASE_URL = "http://localhost:5090/api"
 SWAGGER_URL = "http://localhost:5090"  # URL do Swagger UI
 HEADERS = {"Content-Type": "application/json"}
 
@@ -74,7 +79,7 @@ def test_auth_endpoints():
     print_test("Login com credenciais válidas")
     login_data = {
         "email": "joao@email.com",
-        "password": "123456"
+        "password": "senha123"
     }
     response = requests.post(f"{BASE_URL}/Auth/login", json=login_data, headers=HEADERS)
     print_response(response)
@@ -301,6 +306,37 @@ def test_data_validation():
     response = requests.post(f"{BASE_URL}/Investments", json=invalid_investment, headers=HEADERS)
     print_response(response)
 
+def test_stock_quotes():
+    """Testa os endpoints de cotações de ações"""
+    print_separator("TESTES DE COTAÇÕES DE AÇÕES (ALPHA VANTAGE)")
+    
+    # Teste com símbolo válido (GET)
+    print_test("GET - Consultar cotação via query parameter")
+    response = requests.get(f"{BASE_URL}/StockQuotes/quote?symbol=PETR4.SA")
+    print_response(response)
+    
+    # Teste com outro símbolo (POST)
+    print_test("POST - Consultar cotação via body JSON")
+    stock_data = {"symbol": "VALE3.SA"}
+    response = requests.post(f"{BASE_URL}/StockQuotes/quote", json=stock_data, headers=HEADERS)
+    print_response(response)
+    
+    # Teste com símbolo vazio
+    print_test("GET - Tentar consultar com símbolo vazio")
+    response = requests.get(f"{BASE_URL}/StockQuotes/quote?symbol=")
+    print_response(response)
+    
+    # Teste com símbolo inválido
+    print_test("POST - Consultar com símbolo inválido")
+    invalid_stock = {"symbol": "XXXXX"}
+    response = requests.post(f"{BASE_URL}/StockQuotes/quote", json=invalid_stock, headers=HEADERS)
+    print_response(response)
+    
+    # Teste com mais símbolos
+    print_test("GET - Consultar cotação ITUB4.SA")
+    response = requests.get(f"{BASE_URL}/StockQuotes/quote?symbol=ITUB4.SA")
+    print_response(response)
+
 def main():
     """Função principal que executa todos os testes"""
     print("🚀 INICIANDO TESTES DA INVESTMENT API")
@@ -317,6 +353,7 @@ def main():
         token = test_auth_endpoints()
         created_user_id = test_users_crud()
         created_investment_id = test_investments_crud(created_user_id)
+        test_stock_quotes()  # Novo teste de cotações
         test_delete_operations(created_user_id, created_investment_id)
         test_data_validation()
         

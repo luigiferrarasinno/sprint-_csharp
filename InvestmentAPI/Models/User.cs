@@ -19,6 +19,10 @@ namespace InvestmentAPI.Models
         [StringLength(20)]
         public string? Phone { get; set; }
         
+        [Required]
+        [StringLength(255)]
+        public string PasswordHash { get; set; } = string.Empty;
+        
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         
         // Navigation property
